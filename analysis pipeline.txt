@@ -1,0 +1,89 @@
+In my opinion, the bot user should have the following property:
+
+(1) they send the message to many other users
+
+(2) averagely, each receiver do not get too many messages from this bot
+
+(3) the bot send a message very quickly, there are lots of short time interval between the adjacent message
+
+(4) they are active, have longer online time
+
+(5) not many receiver reply to their message
+
+(6) in the unite time, they send lots of messages
+
+(7) their send message time have a typical periodic pattern
+
+
+To use these criteria, we need to extract the statistical summary for each sending user. A loop is designed to do this
+
+(0) chose one sending user
+
+(1) extract a data frame which contains all the sending logs of this user from the original log file
+
+(2) (a)extract the time list of sending messages. 
+    
+    (b)Calculate the time interval between every adjacent message. 
+    
+    (c)The start time and the end time determine the online time.
+
+    (d) After remove the relax time which is a long time interval (for example, longer than 2 hours), we will get the active time of this user.
+
+    (e) count the short time interval, (eg, less than 10 seconds)
+
+    (f) calculate the mean and median value of all the time intervals. Finally use the mean value in the following analysis
+
+    (g) use the FFT algorithm or other technique to test the periodic property of this sending message time list, calculate the p.value of the periodic test
+(3) count how many message receivers, how many messages totally, how is the average number of message for each receiver
+
+(4) extract another data frame that contains all the receiving logs of these users. Count how many receivers reply to this user. how is average message reply to this user
+
+(5) how much percentage of the receiver reply to this user
+
+(6) count how many different age types in the receivers
+
+(7) count how many platforms this user use
+
+
+Use the clustering method, we can see two different groups of users, one containing 992 users is probably the bot users cluster. But, I do not want to use this method to determine the bot users.
+
+I want to use the criteria and the statistical summary of each user to calculate a score which indicates the probability of being a bot
+
+
+
+score = (avtive online time) * (number of sending messgae)^2 * (number of receiver) / ((average message for each receiver)* (median value of time interval) * (percentage of reply users) *(p value of periodic test))
+
+
+
+here we can see the higher this number, the higher probability of this user is a bot
+
+After calculating all the scores, choose the ones which larger than 50 as the bot. This is based on the information of the former clustering analysis, and some specific rule: the user should send many messages, the median time interval should not be too large
+
+After doing some tests, I  use threshold 50 can roughly find 1235 bot users.
+
+
+
+
+Among these potential bot users, I did a clustering analysis again to divide these users into groups.
+
+
+
+
+Although I classify them into 4 groups, groups 3 and 4 are very similar. 
+
+They are the bots with high possibility. Their logs have a clear non-randomness pattern, 
+
+they send each receiver 5 messages in less than 2 seconds, and can receive also 5 messages back in a very short time.
+
+these feedback messages probably are automatically generated.
+
+The other groups do not have so clear periodic pattern in the sending message time and have different active time in each group.
+
+
+(1) In this short time, I can not test more different type of score, This should be left in the future if we can have more users information
+
+(2) there is still the possibility to improve the periodic analysis, this is crucial to detect the bot user behaviors
+
+(3) there are still other ways to determine the probability of being the bot based on the statistical summary. Need to work on it in the future
+
+
